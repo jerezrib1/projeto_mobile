@@ -1,27 +1,87 @@
-import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { PrincipalProps } from '../navigation/HomeNavigator';
-import { styles } from '../styles/styles';
-import Exemplo01 from '../components/Exemplo01';
-import Exemplo1 from '../components/Exemplo1';
-import Exemplo05_Text from '../components/Exemplo05_Text';
-import Exemplo06_TextInput from '../components/Exemplo06_TextInput';
-import Exemplo07_Image from '../components/Exemplo07_Image';
+import React from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import { PrincipalProps } from '../navigator/HomeNavigator';
 
-//Componente chamado TelaPrincipal que recebe 
-//PrincipalProps 
-//como parametro e constrói uma View com o componente 
-//HelloWorld e Exemplo1 dentro
-const TelaPrincipal = (props: PrincipalProps) => {
-  
+const { width } = Dimensions.get('window');
+const numColumns = 6;
+const numRows = 12;
+const squareSize = width / numColumns;
+
+const TelaPrincipal = ({ navigation }: PrincipalProps) => {
+  const squares = Array.from({ length: numRows * numColumns }, (_, index) => {
+    const isRed = (Math.floor(index / numColumns) + index) % 2 === 0;
+    return (
+      <View
+        key={index}
+        style={[
+          styles.square,
+          { backgroundColor: isRed ? '#ff4d4d' : '#fff' },
+        ]}
+      />
+    );
+  });
+
   return (
-    <View
-      style={[styles.tela]}>
-        <Exemplo07_Image/>
-        {/* <Exemplo1/> */}
+    <View style={styles.container}>
+      <View style={styles.background}>{squares}</View>
+
+      <View style={styles.content}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('CadastroPaciente')}
+        >
+          <Text style={styles.buttonText}>Cadastrar Paciente</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('FilaAtendimento')}
+        >
+          <Text style={styles.buttonText}>Ver Fila de Atendimento</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
-}
+};
 
-//exportando o componente TelaPrincipal para ficar visível para outros arquivos
 export default TelaPrincipal;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  background: {
+    ...StyleSheet.absoluteFillObject,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  square: {
+    width: squareSize,
+    height: squareSize,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 30,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    borderRadius: 10,
+    marginVertical: 20,
+    width: '90%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+});
